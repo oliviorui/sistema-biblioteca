@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="pt-pt">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Admin | Biblioteca</title>
+  <link rel="stylesheet" href="./assets/css/styles.css">
+</head>
+<body>
+  <div class="container">
+    <div class="nav">
+      <div class="brand">Biblioteca • Administração</div>
+      <div class="grow"></div>
+      <a href="./index.html" class="btn danger">Sair</a>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <div class="row" style="margin-bottom:8px">
+        <div>
+          <label for="date">Data</label>
+          <input id="date" class="input" type="date">
+        </div>
+        <button id="reload" class="btn">Atualizar</button>
+        <button id="exportCsv" class="btn secondary">Exportar CSV</button>
+      </div>
+      <div class="card" style="padding:0">
+        <table class="table">
+          <thead><tr><th>Código</th><th>Nome</th><th>Curso</th><th>Entrada</th><th>Saída</th><th>Ações</th></tr></thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <footer>© Biblioteca — Administração</footer>
+</body>
+</html>

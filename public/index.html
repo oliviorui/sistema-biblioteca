@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="pt">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Welcome - Biblioteca</title>
+  <link rel="stylesheet" href="./assets/css/styles.css">
+</head>
+<body>
+  <div class="container">
+    <div class="nav">
+      <div class="brand">Biblioteca • ITC</div>
+      <div class="grow"></div>
+      <a href="./login.html" class="btn secondary">Área de Gestão</a>
+    </div>
+    <div class="hero">
+      <h1>Registo de Entradas e Saídas</h1>
+      <p>Digite o seu <b>código de estudante</b> e confirme</p>
+    </div>
+    <div class="card">
+      <div class="row">
+        <input class="input grow" id="codeInput" placeholder="Ex.: M24281">
+        <button class="btn" id="confirmBtn">Confirmar</button>
+      </div>
+      <div id="status" class="status">Pronto para registar.</div>
+    </div>
+  </div>
+
+  <!-- Modal de cadastro rápido caso nã seja encontrado na base de dados -->
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal">
+      <header>
+        <h3>Cadastro rápido</h3>
+        <button class="btn secondary" id="btnCloseModal">Fechar</button>
+      </header>
+      <div class="content">
+        <form id="formQuick">
+          <div class="grid grid-2">
+            <div class="field"><label>Código*</label><input class="input" id="q_code" required></div>
+            <div class="field"><label>Nome*</label><input class="input" id="q_name" required></div>
+            <div class="field"><label>Curso</label><input class="input" id="q_course"></div>
+            <div class="field"><label>Turma</label><input class="input" id="q_class"></div>
+          </div>
+          <small id="q_error" class="hint" style="color:#C0392B"></small>
+        </form>
+      </div>
+      <div class="actions">
+        <button class="btn secondary" id="btnCloseModal">Cancelar</button>
+        <button class="btn" onclick="document.querySelector('#formQuick').dispatchEvent(new Event('submit',{cancelable:true}))">Salvar e Registar</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>© Biblioteca — Sistema de Controle de Visitas</footer>
+</body>
+</html>
