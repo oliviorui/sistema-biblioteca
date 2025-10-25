@@ -1,0 +1,151 @@
+/* Reset básico */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+  background: #f0f4f8;
+  color: #0f172a;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Container principal */
+.kiosk-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 40px 20px;
+  gap: 40px;
+}
+
+/* Header */
+.kiosk-header {
+  text-align: center;
+}
+.kiosk-header .logo { width: 140px; margin-bottom: 20px; }
+.kiosk-header h1 { font-size: 2.5rem; margin-bottom: 12px; }
+.kiosk-header p { font-size: 1.2rem; color: #6b7280; }
+
+/* Main */
+.kiosk-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  width: 100%;
+  max-width: 500px;
+}
+
+/* Card de check-in */
+.checkin-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 50px 30px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+  width: 100%;
+  text-align: center;
+}
+.checkin-card:hover {
+  box-shadow: 0 18px 40px rgba(0,0,0,0.12);
+}
+
+/* Título */
+.checkin-card h2 {
+  font-size: 1.8rem;
+  margin-bottom: 25px;
+}
+
+/* Formulário */
+.checkin-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.checkin-card label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #374151;
+  text-align: left;
+}
+.checkin-card input {
+  padding: 18px 16px;
+  font-size: 1.1rem;
+  border-radius: 12px;
+  border: 1px solid rgba(15,23,42,0.1);
+  outline: none;
+}
+.checkin-card input:focus {
+  border: 2px solid #1B2DD0;
+  box-shadow: 0 0 10px rgba(59,130,246,0.3);
+}
+.checkin-card button {
+  padding: 18px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg,#1e40af,#3b82f6);
+  color: #fff;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.checkin-card button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(28,58,148,0.2);
+}
+
+/* Link interno */
+.kiosk-main p {
+  margin-top: 10px;
+  font-size: 1rem;
+  color: #6b7280;
+}
+.kiosk-main a {
+  color: #1e40af;
+  font-weight: 600;
+  text-decoration: underline;
+}
+.kiosk-main a:hover { color: #3b82f6; }
+
+/* Responsivo touch-friendly */
+@media (max-width: 500px) {
+  .checkin-card {
+    padding: 40px 20px;
+  }
+  .kiosk-header h1 { font-size: 2rem; }
+  .checkin-card h2 { font-size: 1.5rem; }
+}
+
+
+
+/* === Toast notifications (top-right) === */
+.toast{
+  position: fixed; right: 20px; top: 20px; z-index: 9999;
+  display: flex; flex-direction: column; gap: 8px;
+  pointer-events: none;
+}
+.toast .t{
+  pointer-events: auto;
+  padding: 12px 14px; border-radius: 12px; border: 1px solid #2b3957;
+  background: #0c1424; color: #e8f0f7;
+  box-shadow: 0 6px 18px rgba(0,0,0,.25);
+  display: flex; gap: 10px; align-items: center; min-width: 280px;
+  animation: toastIn .24s ease forwards;
+}
+.t.success{ border-color:#1a9d6b; background: linear-gradient(180deg,#0f1f24,#0e1a20); }
+.t.info   { border-color:#3d7eff; }
+.t.error  { border-color:#ff5b6e; }
+.t .icon{ font-size: 18px; line-height: 1; }
+.t .msg { font-size: 14px; }
+.t .time{ margin-left: auto; font-size: 12px; opacity: .7; }
+@keyframes toastIn { from{opacity:0; transform: translateY(-6px)} to{opacity:1; transform: translateY(0)} }
+@keyframes toastOut{ to{opacity:0; transform: translateY(-6px)} }
+
+/* inline status message */
+.kiosk-message{ margin-top: 10px; font-size: 14px; }
+.kiosk-message.success{ color:#1a9d6b }
+.kiosk-message.error  { color:#ff5b6e }
+.kiosk-message.info   { color:#3d7eff }
+

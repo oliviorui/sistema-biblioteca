@@ -1,0 +1,107 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #f3f4f6, #a7b7d9);
+}
+
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  padding: 30px;
+}
+
+.card-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+img {
+  width: 200px;
+}
+
+.card-title {
+  font-size: 28px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.card-description {
+  font-size: 14px;
+  color: #777;
+}
+
+.card-content {
+  margin-top: 20px;
+}
+
+.input-group {
+  margin-bottom: 15px;
+}
+
+.input-group label {
+  display: block;
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.input-group input:focus {
+  border: 2px solid #1B2DD0;
+  outline: none;
+}
+
+.btn {
+  width: 100%;
+  padding: 12px;
+  background-color: #364a97;
+  color: white;
+  font-size: 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background-color: #1B2DD0;
+}
+
+.toggle-auth {
+  text-align: center;
+  margin-top: 15px;
+}
+
+.toggle-auth button {
+  background: none;
+  color: #364a97;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+}
