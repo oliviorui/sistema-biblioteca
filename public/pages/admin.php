@@ -11,7 +11,12 @@ if (!$auth->isAdmin()) { header('Location: ./erro.php'); exit; }
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>BiblioControl - Painel Admin</title>
+
+  <link rel="preload" href="../assets/js/lib/jquery.js" as="script">
+  <link rel="preload" href="../assets/js/lib/validate.js" as="script">
+
   <link rel="stylesheet" href="../assets/css/admin.css">
+  
   <link rel="shortcut icon" href="../assets/img/logo-itc.png" type="image/x-icon">
 </head>
 <body>
@@ -112,7 +117,7 @@ if (!$auth->isAdmin()) { header('Location: ./erro.php'); exit; }
       </div>
     </section>
   </main>
-  <script src="../assets/js/lib/jquery.js"></script>
+  
   <script>
     $(function() {
       // === Botão de Logout ===
