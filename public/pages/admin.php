@@ -113,16 +113,6 @@ if (!$auth->isAdmin()) { header('Location: ./erro.php'); exit; }
     </section>
   </main>
   <script src="../assets/js/lib/jquery.js"></script>
-  
-
-  
-
-  
-
-
-  
-
-  
   <script src="../assets/js/admin.js"></script>
 </body>
 </html>
