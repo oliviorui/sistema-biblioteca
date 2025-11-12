@@ -45,15 +45,11 @@ CREATE TABLE visitas (
   INDEX (hora_saida)
 ) ENGINE=InnoDB;
 
--- Substitui apenas a tabela LOGS
-DROP TABLE IF EXISTS logs;
-
 CREATE TABLE logs (
   id INT AUTO_INCREMENT PRIMARY KEY,
   actor_type ENUM('usuario','estudante','sistema') NOT NULL DEFAULT 'sistema',
   actor_user_id    INT NULL,
   actor_student_id INT NULL,
-
   action  VARCHAR(80) NOT NULL,
   details TEXT NULL,
   criado_em DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -65,20 +61,12 @@ CREATE TABLE logs (
 
   CONSTRAINT fk_logs_user FOREIGN KEY (actor_user_id)
     REFERENCES usuarios(id) ON DELETE SET NULL,
-
   CONSTRAINT fk_logs_student FOREIGN KEY (actor_student_id)
-    REFERENCES estudantes(id) ON DELETE SET NULL,
+    REFERENCES estudantes(id) ON DELETE SET NULL
 
-  -- Regra de consistência:
-  --  usuario   => actor_user_id    NOT NULL e actor_student_id NULL
-  --  estudante => actor_student_id NOT NULL e actor_user_id    NULL
-  --  sistema   => ambos NULL
-  CONSTRAINT chk_logs_actor_valid
-  CHECK (
-    (actor_type = 'usuario'   AND actor_user_id IS NOT NULL    AND actor_student_id IS NULL) OR
-    (actor_type = 'estudante' AND actor_student_id IS NOT NULL AND actor_user_id IS NULL)    OR
-    (actor_type = 'sistema'   AND actor_user_id IS NULL        AND actor_student_id IS NULL)
-  )
+  -- Observação:
+  -- A lógica de consistência (actor_type vs campos) pode ser implementada via TRIGGER
+  -- pois CHECK não é garantido em versões antigas do MySQL/MariaDB.
 ) ENGINE=InnoDB;
 
 CREATE TABLE sessoes (
@@ -164,13 +152,6 @@ VALUES
 (8, '2025-05-22', '2025-05-22 10:20:00', '2025-05-22 11:00:00', 'bibliotecario'),
 (9, '2025-06-03', '2025-06-03 09:00:00', '2025-06-03 09:40:00', 'kiosk'),
 (10, '2025-06-18', '2025-06-18 14:15:00', '2025-06-18 15:05:00', 'kiosk');
-
--- Sessões de login (exemplo)
-INSERT INTO sessoes (usuario_id, token, user_agent, ip, data_expiracao)
-VALUES
-(1, SHA2('adminsession1', 256), 'Mozilla/5.0', '127.0.0.1', DATE_ADD(NOW(), INTERVAL 1 DAY)),
-(2, SHA2('helenasession1', 256), 'Mozilla/5.0', '127.0.0.1', DATE_ADD(NOW(), INTERVAL 1 DAY));
-
 
 -- === Logs (ações de sistema) ===
 INSERT INTO logs (actor_type, action, details) VALUES
