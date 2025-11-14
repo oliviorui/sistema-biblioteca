@@ -1,6 +1,3 @@
-/* ==== Extracted from public/pages/admin.php ==== */
-
-/* Block #1 */
 $(function() {
       // === Botão de Logout ===
       $(".logout-button").on("click", function() {
@@ -19,7 +16,6 @@ $(function() {
       });
     });
 
-/* Block #2 */
 $(function() {
       function atualizarStats() {
         $.getJSON("../../app/api/visitas.php?action=stats", function(data) {
@@ -46,7 +42,6 @@ $(function() {
       $(document).on("userChanged", atualizarStats);
     });
 
-/* Block #3 */
 $(function(){
     async function carregarStatsUsuarios(){
       try{
@@ -65,9 +60,8 @@ $(function(){
     setInterval(carregarStatsUsuarios, 10000); // atualiza a cada 10s, se quiser
   });
 
-/* Block #4 */
 $(function() {
-      // === 1️⃣ Carregar usuários ===
+      // === 1️ Carregar usuários ===
       function carregarUsuarios() {
         $.getJSON("../../app/api/usuarios.php?action=listar", function(resp) {
           if (!resp.success) return console.error(resp.error || "Erro ao listar");
@@ -91,7 +85,7 @@ $(function() {
 
       carregarUsuarios();
 
-      // === 2️⃣ Remover usuário ===
+      // === 2 Remover usuário ===
       $(document).on("click", ".btn-delete", function() {
         const id = $(this).data("id");
         if (!confirm("Tem certeza que deseja remover este usuário?")) return;
@@ -111,7 +105,7 @@ $(function() {
         });
       });
 
-      // === 3️⃣ Adicionar usuário ===
+      // === 3️ Adicionar usuário ===
       $(".btn-add").on("click", function() {
         const nome = prompt("Nome do usuário:");
         const email = prompt("Email:");
@@ -136,7 +130,7 @@ $(function() {
         });
       });
 
-      // === 4️⃣ Editar usuário ===
+      // === 4️ Editar usuário ===
       $(document).on("click", ".btn-edit", function() {
         const id = $(this).data("id");
         const nomeAtual = $(this).data("nome");
@@ -168,7 +162,6 @@ $(function() {
       });
     });
 
-/* Block #5 */
 $(function() {
       function atualizarLogs() {
         $.getJSON("../../app/api/logs.php?action=ultimos", function(resp) {

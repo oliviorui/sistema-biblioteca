@@ -5,8 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>BiblioControl - Kiosk</title>
   <link rel="stylesheet" href="public/assets/css/kiosk.css">
-  <link rel="shortcut icon" href="public/assets/img/logo-itc.png" type="image/x-icon">
-  <script src="public/assets/js/lib/jquery.js"></script>
+  <link rel="shortcut icon" href="public/assets/img/logo-itc.png" type="image/x-icon"> 
 </head>
 <body>
   <div class="kiosk-container">
@@ -36,10 +35,40 @@
         <p>Bibliotecário/Admin? <a href="public/pages/login.php">Clique abaixo</a></p>
     </main>
   </div>
-<p id="kiosk-message" class="kiosk-message" aria-live="polite"></p>
+  <p id="kiosk-message" class="kiosk-message" aria-live="polite"></p>
 
+  <div id="quick-register-modal" class="modal hidden" aria-hidden="true">
+    <div class="modal-content">
+      <h2>Cadastro rápido de estudante</h2>
+      <p>Esse código ainda não existe. Preencha os dados para criar o cadastro.</p>
 
+      <form id="quick-register-form">
+        <label for="qr-code">Código</label>
+        <input id="qr-code" type="text" readonly>
 
+        <label for="qr-nome">Nome Completo</label>
+        <input id="qr-nome" type="text" required>
+
+        <div class="modal-grid">
+          <div>
+            <label for="qr-curso">Curso</label>
+            <input id="qr-curso" type="text" placeholder="Opcional">
+          </div>
+          <div>
+            <label for="qr-turma">Turma</label>
+            <input id="qr-turma" type="text" placeholder="Opcional">
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" id="qr-cancel" class="btn-secondary">Cancelar</button>
+          <button type="submit" class="btn-primary">Salvar e registrar entrada</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="public/assets/js/lib/jquery.js"></script>
   <script src="public/assets/js/kiosk.js"></script>
 </body>
 </html>

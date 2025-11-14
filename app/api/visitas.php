@@ -11,7 +11,7 @@ try {
     $auth = new Auth();
     $user = $auth->check();
 
-    // permitir ADMIN ou BIBLIOTECÁRIO
+    // permitir ao BIBLIOTECÁRIO
     if (!$user || (! $auth->isAdmin() && ! $auth->hasRole('bibliotecario'))) {
         http_response_code(401);
         echo json_encode(['success'=>false, 'message'=>'Acesso não autorizado']);

@@ -149,6 +149,38 @@ if (!$auth->hasRole('bibliotecario')) { header('Location: ./erro.php'); exit; }
         </div>
       </div>
     </section>
+
+        <!-- Modal de cadastro rápido de estudante -->
+    <div id="quick-register-modal" class="modal hidden" aria-hidden="true">
+      <div class="modal-content">
+        <h2>Cadastro rápido de estudante</h2>
+        <p>Esse código ainda não existe. Preencha os dados para criar o cadastro.</p>
+
+        <form id="quick-register-form">
+          <label for="qr-code">Código</label>
+          <input id="qr-code" type="text" readonly>
+
+          <label for="qr-nome">Nome Completo</label>
+          <input id="qr-nome" type="text" required>
+
+          <div class="modal-grid">
+            <div>
+              <label for="qr-curso">Curso</label>
+              <input id="qr-curso" type="text" placeholder="Opcional">
+            </div>
+            <div>
+              <label for="qr-turma">Turma</label>
+              <input id="qr-turma" type="text" placeholder="Opcional">
+            </div>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" id="qr-cancel" class="btn-secondary">Cancelar</button>
+            <button type="submit" class="btn-primary">Salvar e registrar entrada</button>
+          </div>
+        </form>
+      </div>
+    </div>
   </main>
   <script src="../assets/js/lib/jquery.js"></script>
   
