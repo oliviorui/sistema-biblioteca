@@ -95,6 +95,50 @@ if (!$auth->isAdmin()) { header('Location: ./erro.php'); exit; }
         <button class="btn-add">Adicionar Usuário</button>
       </div>
 
+     <!-- Modal de cadastro/edição de usuário -->
+     <div id="user-modal" class="modal hidden" aria-hidden="true">
+      <div class="modal-content">
+        <h2 id="user-modal-title">Novo usuário</h2>
+
+        <form id="user-form">
+          <input type="hidden" id="user-id">
+
+          <label for="user-nome">Nome completo</label>
+          <input type="text" id="user-nome" required>
+
+          <label for="user-email">Email</label>
+          <input type="email" id="user-email" required>
+
+          <div class="form-row">
+            <div class="field">
+              <label for="user-role">Perfil</label>
+              <select id="user-role">
+                <option value="bibliotecario">Bibliotecário</option>
+                <option value="admin">Administrador</option>
+              </select>
+            </div>
+
+            <div class="field field-checkbox">
+              <label>
+                <input type="checkbox" id="user-ativo" checked>
+                Usuário ativo
+              </label>
+            </div>
+          </div>
+
+          <div id="user-senha-group">
+            <label for="user-senha">Senha</label>
+            <input type="password" id="user-senha" minlength="4" placeholder="Defina uma senha">
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" id="user-cancel" class="btn-secondary">Cancelar</button>
+            <button type="submit" class="btn-primary">Guardar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
       <!-- Logs de ações -->
       <div class="admin-panel">
         <h2>
