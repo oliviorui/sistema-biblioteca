@@ -301,6 +301,39 @@ body {
   background: #e5e7eb;
 }
 
+/* Linha Perfil + Usuário ativo no modal de usuário */
+#user-modal .form-row {
+  display: flex;
+  flex-direction: row;   /* um embaixo do outro */
+  gap: 4px;
+  margin-top: 8px;
+}
+
+/* Campo "Perfil" ocupa largura total */
+#user-modal .form-row .field {
+  width: 100%;
+}
+
+/* Caixa do checkbox logo abaixo, alinhada à esquerda */
+#user-modal .field-checkbox {
+  width: 100%;
+}
+
+#user-modal .field-checkbox label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  font-weight: 500;
+}
+
+/* Checkbox em si */
+#user-ativo {
+  width: auto;
+  height: auto;
+  margin: 0;
+}
+
 /* === Responsivo === */
 @media (max-width: 1100px) {
   .stats-cards { grid-template-columns: repeat(2, 1fr); }
