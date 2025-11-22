@@ -9,7 +9,7 @@ if (!$user) {
     exit;
 }
 
-if () {
+if (!$auth->isAdmin()) {
     header('Location: ./error.php');
     exit;
 }
