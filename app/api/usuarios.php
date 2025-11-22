@@ -1,17 +1,49 @@
 <?php
+declare(strict_types=1);
+
 header('Content-Type: application/json; charset=utf-8');
 
 require_once __DIR__ . '/../lib/Auth.php';
 require_once __DIR__ . '/../lib/User.php';
 require_once __DIR__ . '/../lib/Logger.php';
 
+/* --------------------------
+   Helpers JSON
+--------------------------- */
+
+function json_response(array $data, int $code = 200): void {
+    http_response_code($code);
+    echo json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    exit;
+}
+
+function json_error(string $msg, int $code = 400, array $extra = []): void {
+    json_response(array_merge([
+        'success' => false,
+        'message' => $msg,
+    ], $extra), $code);
+}
+
+function read_body(): array {
+    $raw = file_get_contents('php://input') ?: '';
+    if ($raw !== '') {
+        $json = json_decode($raw, true);
+        if (is_array($json)) {
+            return $json;
+        }
+    }
+    return $_POST ?? [];
+}
+
+/* --------------------------
+   Autenticação
+--------------------------- */
+
 try {
-    // Somente admin
     $auth = new Auth();
+
     if (!$auth->check() || !$auth->isAdmin()) {
-        http_response_code(401);
-        echo json_encode(['success' => false, 'message' => 'Acesso negado']);
-        exit;
+        json_error('Acesso negado', 401);
     }
 
     $userModel     = new User();
@@ -19,120 +51,139 @@ try {
     $currentUserId = isset($_SESSION['user']['id']) ? (int)$_SESSION['user']['id'] : null;
 
     // aliases aceites pelo front
-    $action = $_GET['action'] ?? 'list';
+    $action  = $_GET['action'] ?? 'list';
     $aliases = [
-        'listar'   => 'list',
-        'adicionar'=> 'add',
-        'editar'   => 'update',
-        'remover'  => 'delete',
+        'listar'    => 'list',
+        'adicionar' => 'add',
+        'editar'    => 'update',
+        'remover'   => 'delete',
     ];
-    if (isset($aliases[$action])) $action = $aliases[$action];
+    if (isset($aliases[$action])) {
+        $action = $aliases[$action];
+    }
 
     switch ($action) {
+
         case 'stats': {
-            $userModel = new User();
             $all = $userModel->getAll();
 
-            $adminsAtivos = 0;
+            $adminsAtivos  = 0;
             $bibliosAtivos = 0;
 
             foreach ($all as $u) {
-                if ((int)$u['ativo'] === 1) {
-                    if ($u['role'] === 'admin') $adminsAtivos++;
-                    if ($u['role'] === 'bibliotecario') $bibliosAtivos++;
+                if ((int)($u['ativo'] ?? 0) === 1) {
+                    if ($u['role'] === 'admin') {
+                        $adminsAtivos++;
+                    }
+                    if ($u['role'] === 'bibliotecario') {
+                        $bibliosAtivos++;
+                    }
                 }
             }
 
-            echo json_encode([
-                'success' => true,
-                'adminsAtivos' => $adminsAtivos,
+            json_response([
+                'success'              => true,
+                'adminsAtivos'         => $adminsAtivos,
                 'bibliotecariosAtivos' => $bibliosAtivos,
-                'totalUsuarios' => count($all)
+                'totalUsuarios'        => count($all),
             ]);
             break;
         }
 
         case 'list': {
             $items = $userModel->getAll();
-            // compatibilidade: front espera { success, usuarios: [...] }
-            echo json_encode(['success' => true, 'usuarios' => $items, 'items' => $items]);
+            // compat: front espera { success, usuarios: [...] }
+            json_response([
+                'success'  => true,
+                'usuarios' => $items,
+                'items'    => $items,
+            ]);
             break;
         }
 
         case 'add': {
-            $data = json_decode(file_get_contents('php://input'), true);
-            if (!is_array($data)) $data = $_POST;
+            $data = read_body();
 
-            $nome  = trim($data['nome']  ?? '');
-            $email = trim($data['email'] ?? '');
+            $nome  = trim((string)($data['nome']  ?? ''));
+            $email = trim((string)($data['email'] ?? ''));
             $senha = (string)($data['senha'] ?? '');
-            $role  = trim($data['role']  ?? 'bibliotecario');
+            $role  = trim((string)($data['role']  ?? 'bibliotecario'));
 
             if ($nome === '' || $email === '' || $senha === '') {
-                http_response_code(400);
-                echo json_encode(['success' => false, 'message' => 'Campos obrigatórios: nome, email, senha']);
-                break;
+                json_error('Campos obrigatórios: nome, email, senha', 400);
             }
 
             $ok = $userModel->add($nome, $email, $senha, $role);
             if ($ok && $currentUserId) {
-                $logger->byUserId($currentUserId, 'user.add', json_encode(['email' => $email, 'role' => $role]));
+                $logger->byUserId(
+                    $currentUserId,
+                    'user.add',
+                    json_encode(['email' => $email, 'role' => $role])
+                );
             }
-            echo json_encode(['success' => $ok]);
+
+            json_response(['success' => (bool)$ok]);
             break;
         }
 
         case 'update': {
-            $data = json_decode(file_get_contents('php://input'), true);
-            if (!is_array($data)) $data = $_POST;
+            $data = read_body();
 
             $id    = (int)($data['id'] ?? 0);
-            $nome  = trim($data['nome']  ?? '');
-            $email = trim($data['email'] ?? '');
-            $role  = trim($data['role']  ?? 'bibliotecario');
+            $nome  = trim((string)($data['nome']  ?? ''));
+            $email = trim((string)($data['email'] ?? ''));
+            $role  = trim((string)($data['role']  ?? 'bibliotecario'));
             $ativo = (int)($data['ativo'] ?? 1);
 
             if ($id <= 0 || $nome === '' || $email === '') {
-                http_response_code(400);
-                echo json_encode(['success' => false, 'message' => 'Campos obrigatórios: id, nome, email']);
-                break;
+                json_error('Campos obrigatórios: id, nome, email', 400);
             }
 
             $ok = $userModel->update($id, $nome, $email, $role, $ativo);
             if ($ok && $currentUserId) {
-                $logger->byUserId($currentUserId, 'user.update', json_encode([
-                    'id' => $id, 'email' => $email, 'role' => $role, 'ativo' => $ativo
-                ]));
+                $logger->byUserId(
+                    $currentUserId,
+                    'user.update',
+                    json_encode([
+                        'id'    => $id,
+                        'email' => $email,
+                        'role'  => $role,
+                        'ativo' => $ativo,
+                    ])
+                );
             }
-            echo json_encode(['success' => $ok]);
+
+            json_response(['success' => (bool)$ok]);
             break;
         }
 
         case 'delete': {
             $id = (int)($_GET['id'] ?? 0);
+
             if ($id <= 0) {
-                http_response_code(400);
-                echo json_encode(['success' => false, 'message' => 'ID inválido']);
-                break;
+                json_error('ID inválido', 400);
             }
 
             $toLog = $userModel->getById($id);
-            $ok = $userModel->delete($id);
+            $ok    = $userModel->delete($id);
+
             if ($ok && $currentUserId) {
-                $logger->byUserId($currentUserId, 'user.delete', json_encode($toLog ?: ['id' => $id]));
+                $logger->byUserId(
+                    $currentUserId,
+                    'user.delete',
+                    json_encode($toLog ?: ['id' => $id])
+                );
             }
-            echo json_encode(['success' => $ok]);
+
+            json_response(['success' => (bool)$ok]);
             break;
         }
 
         default: {
-            http_response_code(400);
-            echo json_encode(['success' => false, 'message' => 'Ação inválida']);
-            break;
+            json_error('Ação inválida', 400, ['action' => $action]);
         }
     }
 
 } catch (Throwable $e) {
-    http_response_code(500);
-    echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+    json_error('Erro interno: ' . $e->getMessage(), 500);
 }

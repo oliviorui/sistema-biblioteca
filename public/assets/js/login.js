@@ -1,44 +1,78 @@
 $(document).ready(function () {
-	$("#auth-form").on("submit", async function (e) {
-		e.preventDefault();
 
-		const email = $("#email").val();
-		const senha = $("#password").val();
+  const $form   = $("#login-form");
+  const $email  = $("#email");
+  const $senha  = $("#senha");
+  const $msg    = $("#login-message");
+  const $button = $form.find("button[type=submit]");
 
-		// desativa o botão enquanto faz o login
-		const $btn = $("#submit-button");
-		$btn.prop("disabled", true).text("Aguarde...");
+  function setLoading(isLoading) {
+    if (isLoading) {
+      $button.prop("disabled", true).text("Aguarde...");
+    } else {
+      $button.prop("disabled", false).text("Entrar");
+    }
+  }
 
-		try {
-			const res = await fetch("../../app/api/auth.php?action=login", {
-				method: "POST",
-				headers: {"Content-Type": "application/json"},
-				credentials: "same-origin",
-				body: JSON.stringify({ email, senha })
-			});
+  function showMessage(text, type = "error") {
+    if (!$msg.length) {
+      alert(text);
+      return;
+    }
+    $msg
+      .text(text)
+      .removeClass("ok error")
+      .addClass(type === "ok" ? "ok" : "error");
+  }
 
-			const data = await res.json();
-			console.log(data);
+  $form.on("submit", async function (e) {
+    e.preventDefault();
 
-			if (data.success) {
-				// Redirecionamento de acordo com a role
-				const destino = data.user.role === "admin"
-					? "./admin.php"
-					: "./bibliotecario.php";
+    const email = $email.val().trim();
+    const senha = $senha.val().trim();
 
-				// Transição suave
-				$("body").fadeOut(300, function() {
-					window.location.href = destino;
-				});
-			} else {
-				alert(data.message);
-			}
+    if (!email || !senha) {
+      showMessage("Informe email e senha.");
+      return;
+    }
 
-		} catch (err) {
-			console.error("Erro:", err);
-			alert("Erro de conexão com o servidor.");
-		}
+    setLoading(true);
+    showMessage("");
 
-		$btn.prop("disabled", false).text("Entrar");
-	});
+    try {
+      const res = await fetch("../../app/api/auth.php?action=login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "same-origin",
+        body: JSON.stringify({ email, senha })
+      });
+
+      const data = await res.json();
+      console.log("Login response:", data);
+
+      if (data.success) {
+        // decide destino pela role
+        const role    = data.user && data.user.role;
+        let destino   = "./bibliotecario.php";
+
+        if (role === "admin") {
+          destino = "./admin.php";
+        }
+
+        showMessage("Login bem-sucedido. Redirecionando...", "ok");
+
+        $("body").fadeOut(300, function () {
+          window.location.href = destino;
+        });
+      } else {
+        showMessage(data.message || "Credenciais inválidas.");
+      }
+
+    } catch (err) {
+      console.error("Erro:", err);
+      showMessage("Erro de conexão com o servidor.");
+    }
+
+    setLoading(false);
+  });
 });

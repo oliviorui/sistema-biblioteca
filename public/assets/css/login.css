@@ -105,3 +105,26 @@ img {
   font-size: 14px;
   cursor: pointer;
 }
+/* Mensagem de erro/sucesso abaixo do formulário */
+.login-message {
+  margin-top: 10px;
+  font-size: 14px;
+  text-align: center;
+  color: #b91c1c; /* vermelho suave p/ erro, pode ajustar depois via JS */
+}
+
+/* Link para voltar ao Kiosk */
+.toggle-auth {
+  text-align: center;
+  margin-top: 15px;
+}
+
+.toggle-auth .back-link {
+  color: #364a97;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.toggle-auth .back-link:hover {
+  text-decoration: underline;
+}

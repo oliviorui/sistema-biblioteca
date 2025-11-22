@@ -1,13 +1,21 @@
 <?php
 require_once __DIR__ . '/../../app/lib/Auth.php';
-$auth = new Auth();
-if (!$auth->check()) { header('Location: ./login.php'); exit; }
-if (!$auth->hasRole('bibliotecario')) { header('Location: ./erro.php'); exit; }
-?>
 
+$auth = new Auth();
+$user = $auth->check();
+
+if (!$user) {
+  header('Location: ./login.php');
+  exit;
+}
+
+if (!$auth->hasRole('bibliotecario')) {
+  header('Location: ./error.php');
+  exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="pt-pt">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -15,7 +23,6 @@ if (!$auth->hasRole('bibliotecario')) { header('Location: ./erro.php'); exit; }
   <link rel="stylesheet" href="../assets/css/bibliotecario.css">
   <link rel="shortcut icon" href="../assets/img/logo-itc.png" type="image/x-icon">
 </head>
-
 <body>
   <header class="topbar">
     <div class="container">
@@ -30,7 +37,8 @@ if (!$auth->hasRole('bibliotecario')) { header('Location: ./erro.php'); exit; }
       </div>
 
       <button class="logout-button" aria-label="Sair do sistema">
-        <img src="../assets/img/icons/log-out.svg" alt="Sair" class="icon"> Sair
+        <img src="../assets/img/icons/log-out.svg" alt="Sair" class="icon">
+        Sair
       </button>
     </div>
   </header>
@@ -92,10 +100,20 @@ if (!$auth->hasRole('bibliotecario')) { header('Location: ./erro.php'); exit; }
 
         <form>
           <label for="student-id">Código de Estudante</label>
-          <input id="student-id" type="text" placeholder="Digite código de estudante" required>
+          <input
+            id="student-id"
+            type="text"
+            placeholder="Digite código de estudante"
+            required
+          >
 
           <label for="full-name">Nome Completo</label>
-          <input id="full-name" type="text" placeholder="Digite o nome" required>
+          <input
+            id="full-name"
+            type="text"
+            placeholder="Digite o nome"
+            required
+          >
 
           <div class="actions">
             <button type="submit">Realizar Check-in</button>
@@ -116,12 +134,16 @@ if (!$auth->hasRole('bibliotecario')) { header('Location: ./erro.php'); exit; }
         <div class="visitor-list" id="ativos-list">
           <div class="visitor-item">
             <div class="visitor-meta">
-              <p class="name">Olívio Rui Cumbe <span class="badge">24281</span></p>
+              <p class="name">
+                Olívio Rui Cumbe
+                <span class="badge">24281</span>
+              </p>
               <span class="time">Entrada registada às 7:38</span>
               <span class="reason">Registada em: Kiosk</span>
             </div>
             <button class="btn-checkout">
-              <img src="../assets/img/icons/log-out.svg" alt="Sair" class="icon">Check-out
+              <img src="../assets/img/icons/log-out.svg" alt="Sair" class="icon">
+              Check-out
             </button>
           </div>
         </div>
@@ -141,7 +163,10 @@ if (!$auth->hasRole('bibliotecario')) { header('Location: ./erro.php'); exit; }
       <div class="visitor-list" id="historico-list">
         <div class="visitor-item">
           <div class="visitor-meta">
-            <p class="name">Olívio Rui Cumbe <span class="badge">24281</span></p>
+            <p class="name">
+              Olívio Rui Cumbe
+              <span class="badge">24281</span>
+            </p>
             <span class="time">Entrada: 13/10/2025 09:36</span>
             <span class="time">Saída: 13/10/2025 09:57</span>
             <span class="reason">Registada em: Kiosk</span>
@@ -150,7 +175,7 @@ if (!$auth->hasRole('bibliotecario')) { header('Location: ./erro.php'); exit; }
       </div>
     </section>
 
-        <!-- Modal de cadastro rápido de estudante -->
+    <!-- Modal de cadastro rápido de estudante -->
     <div id="quick-register-modal" class="modal hidden" aria-hidden="true">
       <div class="modal-content">
         <h2>Cadastro rápido de estudante</h2>
@@ -181,10 +206,10 @@ if (!$auth->hasRole('bibliotecario')) { header('Location: ./erro.php'); exit; }
         </form>
       </div>
     </div>
-  </main>
-  <script src="../assets/js/lib/jquery.js"></script>
-  
 
+  </main>
+
+  <script src="../assets/js/lib/jquery.js"></script>
   <script src="../assets/js/bibliotecario.js"></script>
 </body>
 </html>

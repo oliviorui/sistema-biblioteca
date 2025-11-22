@@ -1,5 +1,13 @@
-// === Logout ===
+/* ============================================================
+   ADMIN.JS – Painel Administrativo BiblioControl
+   Refatorado, organizado e consistente com o admin.php
+============================================================ */
+
 $(function() {
+
+  /* ============================================================
+     LOGOUT
+  ============================================================ */
   $(".logout-button").on("click", function() {
     if (!confirm("Deseja realmente sair?")) return;
 
@@ -10,59 +18,48 @@ $(function() {
       } else {
         alert("Erro ao sair: " + (resp.message || "Tente novamente"));
       }
-    }).fail(() => {
-      alert("Erro ao tentar sair!");
-    });
+    }).fail(() => alert("Erro ao tentar sair!"));
   });
-});
 
-// === Stats de Visitas (cards do topo) ===
-$(function() {
-  function atualizarStats() {
+  /* ============================================================
+     ESTATÍSTICAS (VISITAS E OUTROS)
+  ============================================================ */
+
+  function atualizarStatsVisitantes() {
     $.getJSON("../../app/api/visitas.php?action=stats", function(data) {
       if (!data.success) {
-        console.error("Erro:", data.error || data.message);
+        console.error("Erro:", data.message);
         return;
       }
-
       $(".card.success .value").text(data.totalVisitantes);
       $(".card.primary .value").text(data.visitantesHoje);
-      $(".card.default .value").text(data.adminsAtivos);
-    }).fail(function() {
-      console.error("Falha ao carregar estatísticas");
-    });
+    }).fail(() => console.error("Falha ao carregar estatísticas de visitas"));
   }
 
-  atualizarStats();
-  setInterval(atualizarStats, 15000);
-  $(document).on("userChanged", atualizarStats);
-});
-
-// === Stats de Usuários (Admins Ativos – se tiver card específico) ===
-$(function() {
-  async function carregarStatsUsuarios() {
-    try {
-      const r = await fetch("../../app/api/usuarios.php?action=stats");
-      const data = await r.json();
+  // Admins Ativos
+  function atualizarStatsUsuarios() {
+    $.getJSON("../../app/api/usuarios.php?action=stats", function(data) {
       if (data.success) {
-        // Ajusta o seletor conforme o teu HTML
-        $('h3:contains("Admins Ativos")')
-          .closest(".card")
-          .find(".value")
-          .text(data.adminsAtivos);
+        $(".card.default .value").text(data.adminsAtivos);
       }
-    } catch (e) {
-      console.error(e);
-    }
+    }).fail(() => console.error("Erro ao carregar estatísticas de usuários"));
   }
 
-  carregarStatsUsuarios();
-  setInterval(carregarStatsUsuarios, 10000);
-});
+  atualizarStatsVisitantes();
+  atualizarStatsUsuarios();
 
-// === CRUD de Usuários via MODAL ===
-$(function() {
-  // refs do modal de usuário
+  setInterval(atualizarStatsVisitantes, 15000);
+  setInterval(atualizarStatsUsuarios, 10000);
+
+  $(document).on("userChanged", function() {
+    atualizarStatsUsuarios();
+    atualizarStatsVisitantes();
+  });
+
+  /* ============================================================
+     CRUD DE USUÁRIOS (MODAL)
+  ============================================================ */
+
   const $userModal      = $("#user-modal");
   const $userForm       = $("#user-form");
   const $userModalTitle = $("#user-modal-title");
@@ -75,7 +72,7 @@ $(function() {
   const $userSenha      = $("#user-senha");
   const $userCancel     = $("#user-cancel");
 
-  let modoUsuario = "add"; // "add" ou "edit"
+  let modoUsuario = "add";
 
   function abrirUserModal() {
     $userModal.removeClass("hidden").attr("aria-hidden", "false");
@@ -85,24 +82,27 @@ $(function() {
     $userModal.addClass("hidden").attr("aria-hidden", "true");
   }
 
-  // 1) Carregar usuários
+  /* -------------------------
+     LISTAR USUÁRIOS
+  ------------------------- */
   function carregarUsuarios() {
     $.getJSON("../../app/api/usuarios.php?action=listar", function(resp) {
       if (!resp.success) {
-        console.error(resp.error || "Erro ao listar usuários");
+        console.error("Erro:", resp.message);
         return;
       }
 
       const $list = $(".user-list").empty();
 
       resp.usuarios.forEach(function(u) {
-        const badge      = u.role === "admin" ? "Administrador" : "Bibliotecário";
-        const ativoClass = parseInt(u.ativo, 10) === 1 ? "" : "inativo";
+        const badge = u.role === "admin" ? "Administrador" : "Bibliotecário";
+        const inativo = u.ativo == 1 ? "" : "inativo";
 
         $list.append(`
-          <div class="user-item ${ativoClass}">
+          <div class="user-item ${inativo}">
             <p class="user-name">
-              ${u.nome} <span class="badge">${badge}</span>
+              ${u.nome}
+              <span class="badge">${badge}</span>
             </p>
             <div class="actions">
               <button class="btn-edit"
@@ -113,7 +113,10 @@ $(function() {
                       data-ativo="${u.ativo}">
                 Editar
               </button>
-              <button class="btn-delete" data-id="${u.id}">Remover</button>
+              <button class="btn-delete"
+                      data-id="${u.id}">
+                Remover
+              </button>
             </div>
           </div>
         `);
@@ -123,33 +126,33 @@ $(function() {
 
   carregarUsuarios();
 
-  // 2) Remover usuário
+  /* -------------------------
+     REMOVER USUÁRIO
+  ------------------------- */
+
   $(document).on("click", ".btn-delete", function() {
     const id = $(this).data("id");
+
     if (!confirm("Tem certeza que deseja remover este usuário?")) return;
 
-    $.ajax({
-      url: `../../app/api/usuarios.php?action=remover&id=${id}`,
-      method: "GET",
-      cache: false,
-      success: function(resp) {
-        if (resp.success) {
-          alert("Usuário removido!");
-          carregarUsuarios();
-          $(document).trigger("userChanged");
-        } else {
-          alert("Erro ao remover: " + (resp.error || resp.message));
-        }
-      },
-      error: function() {
-        alert("Erro de rede ao remover usuário.");
+    $.getJSON(`../../app/api/usuarios.php?action=remover&id=${id}`, function(resp) {
+      if (resp.success) {
+        alert("Usuário removido!");
+        carregarUsuarios();
+        $(document).trigger("userChanged");
+      } else {
+        alert("Erro ao remover: " + resp.message);
       }
-    });
+    }).fail(() => alert("Erro de rede ao remover usuário."));
   });
 
-  // 3) Abrir modal para ADICIONAR usuário
+  /* -------------------------
+     ADICIONAR USUÁRIO
+  ------------------------- */
+
   $(".btn-add").on("click", function() {
     modoUsuario = "add";
+
     $userModalTitle.text("Adicionar usuário");
 
     $userId.val("");
@@ -157,17 +160,21 @@ $(function() {
     $userEmail.val("");
     $userRole.val("bibliotecario");
     $userAtivo.prop("checked", true);
-    $userSenha.val("");
 
+    $userSenha.val("");
     $userSenhaGroup.show();
     $userSenha.prop("required", true);
 
     abrirUserModal();
   });
 
-  // 4) Abrir modal para EDITAR usuário
+  /* -------------------------
+     EDITAR USUÁRIO
+  ------------------------- */
+
   $(document).on("click", ".btn-edit", function() {
     modoUsuario = "edit";
+
     const $btn = $(this);
 
     $userModalTitle.text("Editar usuário");
@@ -176,9 +183,8 @@ $(function() {
     $userNome.val($btn.data("nome"));
     $userEmail.val($btn.data("email"));
     $userRole.val($btn.data("role"));
-    $userAtivo.prop(parseInt($btn.data("ativo"), 10) === 1);
+    $userAtivo.prop($btn.data("ativo") == 1);
 
-    // Em edição não mexemos na senha
     $userSenha.val("");
     $userSenhaGroup.hide();
     $userSenha.prop("required", false);
@@ -186,7 +192,10 @@ $(function() {
     abrirUserModal();
   });
 
-  // 5) Submeter formulário do modal
+  /* -------------------------
+     SUBMIT MODAL
+  ------------------------- */
+
   $userForm.on("submit", function(e) {
     e.preventDefault();
 
@@ -210,28 +219,22 @@ $(function() {
         alert("Defina uma senha para o usuário.");
         return;
       }
+
       payload.senha = senha;
       url = "../../app/api/usuarios.php?action=adicionar";
     } else {
-      payload.id = parseInt($userId.val(), 10) || 0;
-      if (!payload.id) {
-        alert("ID do usuário inválido.");
-        return;
-      }
+      payload.id = $userId.val();
       url = "../../app/api/usuarios.php?action=editar";
     }
 
     $.ajax({
-      url: url,
-      type: "POST",
+      url,
+      method: "POST",
       contentType: "application/json",
       data: JSON.stringify(payload),
       success: function(resp) {
-        if (!resp || !resp.success) {
-          alert(
-            (resp && (resp.error || resp.message)) ||
-            "Erro ao salvar usuário."
-          );
+        if (!resp.success) {
+          alert(resp.message || "Erro ao salvar usuário.");
           return;
         }
 
@@ -239,66 +242,45 @@ $(function() {
         carregarUsuarios();
         $(document).trigger("userChanged");
 
-        alert(
-          modoUsuario === "add"
-            ? "Usuário criado com sucesso!"
-            : "Usuário atualizado com sucesso!"
-        );
+        alert(modoUsuario === "add" ? "Usuário criado!" : "Usuário atualizado!");
       },
-      error: function() {
-        alert("Erro de rede ao salvar usuário.");
-      }
+      error: () => alert("Erro de rede ao salvar usuário.")
     });
   });
 
-  // 6) Cancelar / ESC fecha modal
-  $userCancel.on("click", function() {
-    fecharUserModal();
-  });
+  /* -------------------------
+     Cancelar modal
+  ------------------------- */
+
+  $userCancel.on("click", fecharUserModal);
 
   $(document).on("keydown", function(e) {
-    if (e.key === "Escape") {
-      fecharUserModal();
-    }
+    if (e.key === "Escape") fecharUserModal();
   });
-});
 
-// === Logs de ações (linguagem amigável) ===
-$(function() {
-  // Mapeia os códigos técnicos para textos amigáveis
-  function formatAction(action) {
-    switch (action) {
-      case "login":
-        return "Sessão iniciada";
-      case "logout":
-        return "Sessão terminada";
-      case "login.falha":
-        return "Tentativa de login falhada";
-      case "checkin.manual":
-        return "Check-in registado manualmente";
-      case "checkin.kiosk":
-        return "Check-in registado no kiosk";
-      case "checkout.kiosk":
-        return "Check-out registado no kiosk";
-      case "visit.close":
-        return "Visita encerrada";
-      case "user.add":
-        return "Utilizador criado";
-      case "user.update":
-        return "Dados de utilizador atualizados";
-      case "user.delete":
-        return "Utilizador removido";
-      default:
-        return (action || "").replace(/\./g, " › ") || "Ação";
-    }
+  /* ============================================================
+     LOGS DE AÇÃO
+  ============================================================ */
+
+  function traduzirAcao(action) {
+    const mapa = {
+      "login": "Sessão iniciada",
+      "logout": "Sessão terminada",
+      "login.falha": "Tentativa de login falhada",
+      "checkin.manual": "Check-in manual",
+      "checkin.kiosk": "Check-in via kiosk",
+      "checkout.kiosk": "Check-out via kiosk",
+      "visit.close": "Visita encerrada",
+      "user.add": "Usuário criado",
+      "user.update": "Usuário atualizado",
+      "user.delete": "Usuário removido"
+    };
+    return mapa[action] || action?.replace(/\./g, " › ") || "Ação";
   }
 
   function atualizarLogs() {
     $.getJSON("../../app/api/logs.php?action=ultimos", function(resp) {
-      if (!resp.success) {
-        console.error(resp.error || "Erro ao listar logs");
-        return;
-      }
+      if (!resp.success) return;
 
       const $list = $(".log-list").empty();
 
@@ -308,14 +290,14 @@ $(function() {
           minute: "2-digit"
         });
 
-        const actor = l.actor_label || l.user_name || "—";
-        const acao  = formatAction(l.action);
+        const ator = l.actor_label || l.user_name || "—";
+        const acao = traduzirAcao(l.action);
 
-        $list.append(
-          `<div class="log-item">
-             <p>${acao} por ${actor} às ${hora}</p>
-           </div>`
-        );
+        $list.append(`
+          <div class="log-item">
+            <p>${acao} por ${ator} às ${hora}</p>
+          </div>
+        `);
       });
     });
   }
@@ -323,4 +305,5 @@ $(function() {
   atualizarLogs();
   setInterval(atualizarLogs, 10000);
   $(document).on("userChanged", atualizarLogs);
+
 });

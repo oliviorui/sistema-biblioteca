@@ -1,15 +1,30 @@
-/* Reset básico */
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { height: 100%; }
+/* ==========================
+   RESET BÁSICO / BASE
+========================== */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
 body {
-  font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+  height: 100%;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
   background: #f0f4f8;
   color: #0f172a;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Container principal */
+/* ==========================
+   CONTAINER PRINCIPAL
+========================== */
+
 .kiosk-container {
   display: flex;
   flex-direction: column;
@@ -20,15 +35,33 @@ body {
   gap: 40px;
 }
 
-/* Header */
+/* ==========================
+   HEADER
+========================== */
+
 .kiosk-header {
   text-align: center;
 }
-.kiosk-header .logo { width: 140px; margin-bottom: 20px; }
-.kiosk-header h1 { font-size: 2.5rem; margin-bottom: 12px; }
-.kiosk-header p { font-size: 1.2rem; color: #6b7280; }
 
-/* Main */
+.kiosk-header .logo {
+  width: 140px;
+  margin-bottom: 20px;
+}
+
+.kiosk-header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 12px;
+}
+
+.kiosk-header p {
+  font-size: 1.2rem;
+  color: #6b7280;
+}
+
+/* ==========================
+   MAIN
+========================== */
+
 .kiosk-main {
   display: flex;
   flex-direction: column;
@@ -39,117 +72,243 @@ body {
 }
 
 /* Card de check-in */
+
 .checkin-card {
-  background: #fff;
+  background: #ffffff;
   border-radius: 20px;
   padding: 50px 30px;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
   width: 100%;
   text-align: center;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+  transition: box-shadow 0.2s ease;
 }
+
 .checkin-card:hover {
-  box-shadow: 0 18px 40px rgba(0,0,0,0.12);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
 }
 
 /* Título */
+
 .checkin-card h2 {
   font-size: 1.8rem;
   margin-bottom: 25px;
 }
 
 /* Formulário */
+
 .checkin-card form {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
+
 .checkin-card label {
   font-size: 1rem;
   font-weight: 600;
   color: #374151;
   text-align: left;
 }
+
 .checkin-card input {
   padding: 18px 16px;
   font-size: 1.1rem;
   border-radius: 12px;
-  border: 1px solid rgba(15,23,42,0.1);
+  border: 1px solid rgba(15, 23, 42, 0.1);
   outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+  background-color: #ffffff;
 }
+
 .checkin-card input:focus {
   border: 2px solid #1B2DD0;
-  box-shadow: 0 0 10px rgba(59,130,246,0.3);
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+  background-color: #f9fafb;
 }
+
+/* Botão principal */
+
 .checkin-card button {
   padding: 18px;
   font-size: 1.2rem;
   font-weight: 600;
   border: none;
   border-radius: 12px;
-  background: linear-gradient(135deg,#1e40af,#3b82f6);
-  color: #fff;
+  background: linear-gradient(135deg, #1e40af, #3b82f6);
+  color: #ffffff;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-.checkin-card button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(28,58,148,0.2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.15s ease;
 }
 
-/* Link interno */
+.checkin-card button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(28, 58, 148, 0.2);
+}
+
+.checkin-card button:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 12px rgba(28, 58, 148, 0.15);
+  opacity: 0.95;
+}
+
+.checkin-card button:focus-visible {
+  outline: 2px solid #1d4ed8;
+  outline-offset: 3px;
+}
+
+/* ==========================
+   FOOTER/ LINK ADMIN
+========================== */
+
+.kiosk-footer-info {
+  margin-top: 10px;
+  font-size: 1rem;
+  color: #6b7280;
+}
+
+.kiosk-footer-info a {
+  color: #1e40af;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.kiosk-footer-info a:hover {
+  color: #3b82f6;
+}
+
+/* Backward compatibility com estrutura antiga, se tiver */
 .kiosk-main p {
   margin-top: 10px;
   font-size: 1rem;
   color: #6b7280;
 }
+
 .kiosk-main a {
   color: #1e40af;
   font-weight: 600;
   text-decoration: underline;
 }
-.kiosk-main a:hover { color: #3b82f6; }
 
-/* Responsivo touch-friendly */
+.kiosk-main a:hover {
+  color: #3b82f6;
+}
+
+/* ==========================
+   RESPONSIVO
+========================== */
+
 @media (max-width: 500px) {
   .checkin-card {
     padding: 40px 20px;
   }
-  .kiosk-header h1 { font-size: 2rem; }
-  .checkin-card h2 { font-size: 1.5rem; }
+
+  .kiosk-header h1 {
+    font-size: 2rem;
+  }
+
+  .checkin-card h2 {
+    font-size: 1.5rem;
+  }
 }
 
+/* ==========================
+   TOAST NOTIFICATIONS
+========================== */
 
-
-/* === Toast notifications (top-right) === */
-.toast{
-  position: fixed; right: 20px; top: 20px; z-index: 9999;
-  display: flex; flex-direction: column; gap: 8px;
+.toast {
+  position: fixed;
+  right: 20px;
+  top: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   pointer-events: none;
 }
-.toast .t{
+
+.toast .t {
   pointer-events: auto;
-  padding: 12px 14px; border-radius: 12px; border: 1px solid #2b3957;
-  background: #0c1424; color: #e8f0f7;
-  box-shadow: 0 6px 18px rgba(0,0,0,.25);
-  display: flex; gap: 10px; align-items: center; min-width: 280px;
-  animation: toastIn .24s ease forwards;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid #2b3957;
+  background: #0c1424;
+  color: #e8f0f7;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  min-width: 280px;
+  animation: toastIn 0.24s ease forwards;
 }
-.t.success{ border-color:#1a9d6b; background: linear-gradient(180deg,#0f1f24,#0e1a20); }
-.t.info   { border-color:#3d7eff; }
-.t.error  { border-color:#ff5b6e; }
-.t .icon{ font-size: 18px; line-height: 1; }
-.t .msg { font-size: 14px; }
-.t .time{ margin-left: auto; font-size: 12px; opacity: .7; }
-@keyframes toastIn { from{opacity:0; transform: translateY(-6px)} to{opacity:1; transform: translateY(0)} }
-@keyframes toastOut{ to{opacity:0; transform: translateY(-6px)} }
 
-/* inline status message */
-.kiosk-message{ margin-top: 10px; font-size: 14px; }
-.kiosk-message.success{ color:#1a9d6b }
-.kiosk-message.error  { color:#ff5b6e }
-.kiosk-message.info   { color:#3d7eff }
+.t.success {
+  border-color: #1a9d6b;
+  background: linear-gradient(180deg, #0f1f24, #0e1a20);
+}
 
-/* ========== MODAL CADASTRO RÁPIDO ========== */
+.t.info {
+  border-color: #3d7eff;
+}
+
+.t.error {
+  border-color: #ff5b6e;
+}
+
+.t .icon {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.t .msg {
+  font-size: 14px;
+}
+
+.t .time {
+  margin-left: auto;
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes toastOut {
+  to {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+/* Mensagem inline (se usada) */
+
+.kiosk-message {
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+.kiosk-message.success {
+  color: #1a9d6b;
+}
+
+.kiosk-message.error {
+  color: #ff5b6e;
+}
+
+.kiosk-message.info {
+  color: #3d7eff;
+}
+
+/* ==========================
+   MODAL – CADASTRO RÁPIDO
+========================== */
 
 .modal.hidden {
   display: none;
@@ -157,12 +316,12 @@ body {
 
 .modal {
   position: fixed;
-  inset: 0; /* top:0; right:0; bottom:0; left:0; */
+  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(15, 23, 42, 0.55); /* overlay escuro */
-  z-index: 50; /* acima do card principal */
+  background: rgba(15, 23, 42, 0.55);
+  z-index: 50;
 }
 
 .modal-content {
@@ -226,7 +385,8 @@ body {
   margin-top: 14px;
 }
 
-/* Botões do modal para combinar com o botão principal do kiosk */
+/* Botões do modal */
+
 .btn-primary {
   background: linear-gradient(to right, #2563eb, #1d4ed8);
   color: #ffffff;
@@ -248,6 +408,11 @@ body {
 .btn-primary:active {
   transform: translateY(0);
   box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
+}
+
+.btn-primary:focus-visible {
+  outline: 2px solid #1d4ed8;
+  outline-offset: 3px;
 }
 
 .btn-secondary {
